@@ -1,0 +1,216 @@
+:root {
+    --primary-color: #2196F3;
+    --primary-dark: #1976D2;
+    --primary-light: #BBDEFB;
+    --accent-color: #FF4081;
+    --text-color: #333333;
+    --text-light: #757575;
+    --background-color: #f5f5f5;
+    --card-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Layout Base */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.layout-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navbar */
+.navbar {
+    background-color: white;
+    box-shadow: var(--card-shadow);
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.navbar-brand i {
+    font-size: 1.8rem;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 2rem 0;
+}
+
+.content-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Cards */
+.card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Footer */
+.footer {
+    background-color: white;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+    padding: 1.5rem 0;
+    margin-top: auto;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.footer-links a {
+    color: var(--text-light);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+    color: var(--primary-color);
+}
+
+/* PrimeFaces Customizations */
+.custom-menubar {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+.custom-menubar .ui-menuitem-link {
+    color: var(--text-color) !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 4px !important;
+    transition: background-color 0.2s ease !important;
+}
+
+.custom-menubar .ui-menuitem-link:hover {
+    background-color: var(--primary-light) !important;
+    color: var(--primary-dark) !important;
+}
+
+.ui-button {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    transition: background-color 0.2s ease !important;
+}
+
+.ui-button:hover {
+    background-color: var(--primary-dark) !important;
+    border-color: var(--primary-dark) !important;
+}
+
+/* Utility Classes */
+.text-center { text-align: center; }
+.mt-3 { margin-top: 1rem; }
+.w-100 { width: 100%; }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .navbar-container {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .footer-links {
+        justify-content: center;
+    }
+}
+
+/* Animation Classes */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.centered {
+    margin: 0 auto;
+    max-width: 800px;
+    padding: 20px;
+}
+
+.title {
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.result-card {
+    margin-top: 20px;
+}
+
+.word-count {
+    font-size: 24px;
+    color: var(--primary-color);
+    text-align: center;
+    margin: 20px 0;
+}
+
+/* PrimeFaces customizations */
+.ui-datatable .ui-datatable-header {
+    background: var(--primary-color);
+    color: var(--primary-color-text);
+}
+
+.ui-progressbar {
+    height: 20px;
+} 

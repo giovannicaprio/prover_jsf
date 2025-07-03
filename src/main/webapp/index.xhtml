@@ -1,22 +1,85 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
-<h:head>
-    <title>Prover JSF Application</title>
-</h:head>
-<h:body>
-    <div style="text-align: center; margin-top: 50px;">
-        <h1>Bem-vindo ao Sistema</h1>
-        <p:panel header="Teste de Configuração" style="width: 50%; margin: auto;">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:composition template="/WEB-INF/template/template.xhtml">
+    <ui:define name="title">Analisador de Frases</ui:define>
+
+    <ui:define name="content">
+        <div class="centered">
+            <h1 class="title">Analisador de Frases</h1>
+            
             <h:form>
-                <p:messages />
-                <p:commandButton value="Testar PrimeFaces" 
-                               action="#{null}"
-                               update="@form"
-                               styleClass="ui-button-success"/>
+                <div class="card">
+                    <p:panel>
+                        <f:facet name="header">
+                            <i class="pi pi-pencil"/> Digite sua frase
+                        </f:facet>
+                        
+                        <div class="p-grid">
+                            <div class="p-col-12">
+                                <p:inputTextarea value="#{analisadorFraseBean.frase}"
+                                               placeholder="Digite aqui sua frase para análise..."
+                                               rows="3"
+                                               styleClass="w-100"
+                                               counter="display"
+                                               maxlength="500"
+                                               counterTemplate="{0} caracteres restantes"/>
+                                <br/>
+                                <h:outputText id="display" />
+                            </div>
+                            
+                            <div class="p-col-12 text-center mt-3">
+                                <p:commandButton value="Analisar Frase"
+                                               icon="pi pi-search"
+                                               action="#{analisadorFraseBean.analisarFrase}"
+                                               update="@form"
+                                               styleClass="ui-button-primary"/>
+                            </div>
+                        </div>
+                    </p:panel>
+                    
+                    <p:panel rendered="#{analisadorFraseBean.resultadoVisivel}"
+                             styleClass="result-card mt-3">
+                        <f:facet name="header">
+                            <i class="pi pi-chart-bar"/> Resultado da Análise
+                        </f:facet>
+                        
+                        <div class="word-count text-center">
+                            <h:outputText value="#{analisadorFraseBean.totalPalavrasDistintas}"/>
+                            <h:outputText value=" palavra#{analisadorFraseBean.totalPalavrasDistintas != 1 ? 's' : ''} distinta#{analisadorFraseBean.totalPalavrasDistintas != 1 ? 's' : ''} encontrada#{analisadorFraseBean.totalPalavrasDistintas != 1 ? 's' : ''}"/>
+                        </div>
+                        
+                        <p:dataTable value="#{analisadorFraseBean.ocorrenciasOrdenadas}"
+                                    var="palavra"
+                                    styleClass="mt-3"
+                                    emptyMessage="Nenhuma palavra encontrada">
+                            
+                            <f:facet name="header">
+                                Ocorrências de cada palavra
+                            </f:facet>
+                            
+                            <p:column headerText="Palavra" sortBy="#{palavra.texto}">
+                                <h:outputText value="#{palavra.texto}"/>
+                            </p:column>
+                            
+                            <p:column headerText="Ocorrências" sortBy="#{palavra.ocorrencias}">
+                                <h:outputText value="#{palavra.ocorrencias}"/>
+                            </p:column>
+                            
+                            <p:column headerText="Gráfico">
+                                <p:progressBar value="#{(palavra.ocorrencias / analisadorFraseBean.totalPalavrasDistintas) * 100}"
+                                             labelTemplate="{value}%"
+                                             displayOnly="true"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </div>
             </h:form>
-        </p:panel>
-    </div>
-</h:body>
+        </div>
+    </ui:define>
+</ui:composition>
 </html> 

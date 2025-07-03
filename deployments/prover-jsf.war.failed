@@ -1,0 +1,4 @@
+"{\"WFLYCTL0288: One or more services were unable to start due to one or more indirect dependencies not being available.\" => {
+    \"Services that were unable to start:\" => [\"jboss.deployment.unit.\\\"prover-jsf.war\\\".PARSE\"],
+    \"Services that may be the cause:\" => [\"jboss.remoting.remotingConnectorInfoService.http-remoting-connector\"]
+}}"
