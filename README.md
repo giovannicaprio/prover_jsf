@@ -4,15 +4,35 @@ Aplicação Java Web utilizando JSF, PrimeFaces, CDI, JPA e JMS.
 
 ## Requisitos
 
-- Java 8
-- Maven 3.x
-- WildFly 10.0.0.Final
+- Docker
+- Docker Compose
+- Maven 3.x (para build local)
 
-## Configuração do Ambiente
+## Executando com Docker
 
-1. Instale o Java 8 JDK
-2. Instale o Maven
-3. Baixe e extraia o WildFly 10.0.0.Final
+1. Build do projeto:
+```bash
+mvn clean package
+```
+
+2. Iniciar o container:
+```bash
+docker-compose up --build
+```
+
+A aplicação estará disponível em:
+- Aplicação: http://localhost:8080/prover-jsf
+- Console de Administração: http://localhost:9990
+  - Usuário: admin
+  - Senha: admin123
+
+## Desenvolvimento Local (Alternativo)
+
+Se preferir desenvolver localmente sem Docker, você precisará:
+
+1. Java 8 JDK
+2. Maven 3.x
+3. WildFly 10.0.0.Final
 
 ### Configuração do Banco de Dados no WildFly
 
@@ -30,30 +50,15 @@ Aplicação Java Web utilizando JSF, PrimeFaces, CDI, JPA e JMS.
 </datasource>
 ```
 
-## Compilação e Deployment
+## Tecnologias Utilizadas
 
-1. Clone o repositório:
-```bash
-git clone git@github.com:giovannicaprio/prover_jsf.git
-cd prover_jsf
-```
-
-2. Compile o projeto:
-```bash
-mvn clean package
-```
-
-3. Deploy no WildFly:
-```bash
-mvn wildfly:deploy
-```
-
-## Acessando a Aplicação
-
-Após o deployment, acesse a aplicação em:
-```
-http://localhost:8080/prover-jsf
-```
+- Java 8
+- JSF (JavaServer Faces)
+- PrimeFaces 6.1
+- CDI (Contexts and Dependency Injection)
+- JPA + Hibernate
+- JMS (Java Message Service)
+- WildFly 10.0.0.Final
 
 ## Compatibilidade
 

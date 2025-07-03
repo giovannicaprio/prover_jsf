@@ -1,0 +1,12 @@
+version: '3'
+services:
+  wildfly:
+    build: .
+    ports:
+      - "8080:8080"  # Application port
+      - "9990:9990"  # Management port
+    volumes:
+      - ./target/prover-jsf.war:/opt/jboss/wildfly/standalone/deployments/prover-jsf.war
+    environment:
+      - WILDFLY_USER=admin
+      - WILDFLY_PASS=admin123 
