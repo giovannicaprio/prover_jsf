@@ -24,16 +24,23 @@ public class AnalisadorFraseBean implements Serializable {
     private List<Palavra> palavras;
     private int totalPalavrasDistintas;
     private boolean resultadoVisivel;
+    private boolean processando;
     
     public void analisarFrase() {
-        if (frase == null || frase.trim().isEmpty()) {
-            limparResultados();
-            return;
+        try {
+            processando = true;
+            
+            if (frase == null || frase.trim().isEmpty()) {
+                limparResultados();
+                return;
+            }
+            
+            palavras = analisadorService.analisarTexto(frase);
+            totalPalavrasDistintas = palavras.size();
+            resultadoVisivel = true;
+        } finally {
+            processando = false;
         }
-        
-        palavras = analisadorService.analisarTexto(frase);
-        totalPalavrasDistintas = analisadorService.contarPalavrasDistintas(palavras);
-        resultadoVisivel = !palavras.isEmpty();
     }
     
     private void limparResultados() {
@@ -58,8 +65,9 @@ public class AnalisadorFraseBean implements Serializable {
         if (palavras == null) {
             return Collections.emptyList();
         }
+        
         List<Palavra> ordenadas = new ArrayList<>(palavras);
-        ordenadas.sort((p1, p2) -> Integer.compare(p2.getOcorrencias(), p1.getOcorrencias()));
+        ordenadas.sort((p1, p2) -> p2.getOcorrencias() - p1.getOcorrencias());
         return ordenadas;
     }
     
@@ -69,5 +77,9 @@ public class AnalisadorFraseBean implements Serializable {
     
     public boolean isResultadoVisivel() {
         return resultadoVisivel;
+    }
+    
+    public boolean isProcessando() {
+        return processando;
     }
 } 

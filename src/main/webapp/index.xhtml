@@ -37,7 +37,10 @@
                                                icon="pi pi-search"
                                                action="#{analisadorFraseBean.analisarFrase}"
                                                update="@form"
-                                               styleClass="ui-button-primary"/>
+                                               styleClass="ui-button-primary"
+                                               onclick="PF('statusDialog').show()"
+                                               oncomplete="PF('statusDialog').hide()"
+                                               disabled="#{analisadorFraseBean.processando}"/>
                             </div>
                         </div>
                     </p:panel>
@@ -79,6 +82,18 @@
                     </p:panel>
                 </div>
             </h:form>
+            
+            <p:dialog widgetVar="statusDialog" 
+                      modal="true" 
+                      draggable="false" 
+                      closable="false" 
+                      resizable="false" 
+                      showHeader="false">
+                <div class="text-center">
+                    <p:graphicImage name="images/loading.gif" width="50"/>
+                    <h4>Processando...</h4>
+                </div>
+            </p:dialog>
         </div>
     </ui:define>
 </ui:composition>

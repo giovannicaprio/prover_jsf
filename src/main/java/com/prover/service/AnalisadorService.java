@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class AnalisadorService {
     
-    public List<Palavra> analisarTexto(String texto) {
+    public synchronized List<Palavra> analisarTexto(String texto) {
         if (texto == null || texto.trim().isEmpty()) {
             return Collections.emptyList();
         }
