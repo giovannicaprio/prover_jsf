@@ -141,34 +141,91 @@ Aplicação Java Web para análise de frases, desenvolvida como parte do teste t
 ## Executando o Projeto
 
 ### Pré-requisitos
-- Docker
-- Docker Compose
-- Maven 3.x (para build local)
-- Java 8 JDK
+
+#### **Obrigatórios:**
+- **Docker Desktop** (versão 20.10+)
+- **Docker Compose** (versão 1.29+)
+- **Git** (para clonar o repositório)
+
+#### **Opcionais (para desenvolvimento local):**
+- **Java 8 JDK** (para build local)
+- **Maven 3.6+** (para build local)
 
 ### Passos para Execução
 
-1. Clone o repositório:
+#### **Método 1: Execução Automática (Recomendado)**
+
+1. **Clone o repositório:**
 ```bash
 git clone https://github.com/giovannicaprio/prover_jsf.git
 cd prover_jsf
 ```
 
-2. Build do projeto:
+2. **Execute o script de instalação:**
+```bash
+chmod +x run.sh
+./run.sh
+```
+
+#### **Método 2: Execução Manual**
+
+1. **Clone o repositório:**
+```bash
+git clone https://github.com/giovannicaprio/prover_jsf.git
+cd prover_jsf
+```
+
+2. **Build do projeto (se tiver Java/Maven local):**
 ```bash
 mvn clean package
 ```
 
-3. Iniciar containers:
+3. **Iniciar containers:**
 ```bash
 docker-compose up --build
 ```
 
-A aplicação estará disponível em:
-- Aplicação: http://localhost:8080/prover-jsf
-- Console Admin: http://localhost:9990
-  - Usuário: admin
-  - Senha: admin123
+### **Acesso à Aplicação**
+
+Após a inicialização (aguarde ~15 segundos):
+- **Aplicação:** http://localhost:8080/prover-jsf
+- **Console Admin:** http://localhost:9990
+  - **Usuário:** admin
+  - **Senha:** admin123
+
+### **Troubleshooting**
+
+#### **Problemas Comuns:**
+
+1. **Porta 8080 ou 9990 já em uso:**
+```bash
+# Verificar processos usando as portas
+lsof -i :8080
+lsof -i :9990
+
+# Parar containers existentes
+docker-compose down
+```
+
+2. **Erro de permissão no script:**
+```bash
+chmod +x run.sh
+```
+
+3. **Docker não está rodando:**
+```bash
+# Iniciar Docker Desktop
+# Verificar se está funcionando
+docker --version
+docker-compose --version
+```
+
+4. **Limpar tudo e recomeçar:**
+```bash
+docker-compose down --volumes --remove-orphans
+docker system prune -f
+./run.sh
+```
 
 ## Estrutura do Projeto
 

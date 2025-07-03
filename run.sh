@@ -2,16 +2,18 @@
 
 echo "🚀 Iniciando o processo de build e deploy do projeto Prover JSF..."
 
-# Configura o Java 8
-export JAVA_HOME="/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home"
-export PATH="$JAVA_HOME/bin:$PATH"
-
-# Verifica a versão do Java
-java_version=$(java -version 2>&1 | head -n 1 | cut -d'"' -f2)
-if [[ ! $java_version =~ ^1\.8\. ]]; then
-    echo "❌ Versão incorreta do Java. Necessário Java 8, encontrado: $java_version"
-    echo "💡 Verifique se o JAVA_HOME está configurado corretamente"
-    exit 1
+# Verifica se o Java está disponível (opcional para Docker)
+if command -v java &> /dev/null; then
+    java_version=$(java -version 2>&1 | head -n 1 | cut -d'"' -f2)
+    if [[ ! $java_version =~ ^1\.8\. ]]; then
+        echo "⚠️  Aviso: Java 8 não encontrado localmente ($java_version)"
+        echo "💡 O build será feito dentro do container Docker"
+    else
+        echo "✅ Java 8 encontrado: $java_version"
+    fi
+else
+    echo "⚠️  Java não encontrado localmente"
+    echo "💡 O build será feito dentro do container Docker"
 fi
 
 # Verifica se o Docker está rodando
@@ -20,13 +22,18 @@ if ! docker info > /dev/null 2>&1; then
     exit 1
 fi
 
-echo "📦 Compilando o projeto com Maven..."
-"$JAVA_HOME/bin/java" -version
-mvn clean package -Dmaven.compiler.source=1.8 -Dmaven.compiler.target=1.8
-
-if [ $? -ne 0 ]; then
-    echo "❌ Falha na compilação do projeto. Verifique os erros acima."
-    exit 1
+# Tenta fazer o build local se Maven estiver disponível
+if command -v mvn &> /dev/null; then
+    echo "📦 Compilando o projeto com Maven local..."
+    mvn clean package -Dmaven.compiler.source=1.8 -Dmaven.compiler.target=1.8
+    
+    if [ $? -ne 0 ]; then
+        echo "⚠️  Falha no build local. Tentando build via Docker..."
+    else
+        echo "✅ Build local realizado com sucesso!"
+    fi
+else
+    echo "📦 Maven não encontrado localmente. Build será feito via Docker..."
 fi
 
 echo "🐳 Construindo e iniciando os containers Docker..."
