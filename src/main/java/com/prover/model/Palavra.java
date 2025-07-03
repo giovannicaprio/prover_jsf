@@ -6,6 +6,11 @@ public class Palavra implements Serializable {
     private String texto;
     private int ocorrencias;
 
+    public Palavra() {
+        this.texto = null;
+        this.ocorrencias = 0;
+    }
+
     public Palavra(String texto, int ocorrencias) {
         this.texto = texto;
         this.ocorrencias = ocorrencias;
@@ -38,5 +43,13 @@ public class Palavra implements Serializable {
     @Override
     public int hashCode() {
         return texto != null ? texto.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Palavra{" +
+               "texto='" + texto + '\'' +
+               ", ocorrencias=" + ocorrencias +
+               '}';
     }
 } 
