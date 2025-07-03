@@ -10,26 +10,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><ui:insert name="title">Prover JSF</ui:insert></title>
     <h:outputStylesheet name="css/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 </h:head>
 
 <h:body>
-    <div class="container">
-        <header>
-            <ui:insert name="header">
-                <h1>Prover JSF Application</h1>
-            </ui:insert>
+    <div class="layout-wrapper">
+        <header class="navbar">
+            <div class="navbar-container">
+                <div class="navbar-brand">
+                    <i class="fas fa-code"></i>
+                    <span>Prover JSF</span>
+                </div>
+                <nav class="navbar-menu">
+                    <ui:insert name="navigation">
+                        <p:menubar styleClass="custom-menubar">
+                            <p:menuitem value="Home" icon="fas fa-home" url="#" />
+                            <p:menuitem value="Análise" icon="fas fa-chart-bar" url="#" />
+                            <p:menuitem value="Sobre" icon="fas fa-info-circle" url="#" />
+                        </p:menubar>
+                    </ui:insert>
+                </nav>
+            </div>
         </header>
 
-        <main>
-            <ui:insert name="content">
-                <p>Default content</p>
-            </ui:insert>
+        <main class="main-content">
+            <div class="content-wrapper">
+                <ui:insert name="content">
+                    <p>Default content</p>
+                </ui:insert>
+            </div>
         </main>
 
-        <footer>
-            <ui:insert name="footer">
-                <p>&#169; 2024 Prover JSF</p>
-            </ui:insert>
+        <footer class="footer">
+            <div class="footer-content">
+                <p>&#169; 2024 Prover JSF - Desenvolvido com <i class="fas fa-heart"></i></p>
+                <div class="footer-links">
+                    <a href="#"><i class="fas fa-envelope"></i> Contato</a>
+                    <a href="#"><i class="fas fa-code-branch"></i> GitHub</a>
+                </div>
+            </div>
         </footer>
     </div>
 </h:body>

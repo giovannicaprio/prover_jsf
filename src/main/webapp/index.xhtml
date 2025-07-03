@@ -62,16 +62,16 @@
                                 Ocorrências de cada palavra
                             </f:facet>
                             
-                            <p:column headerText="Palavra" sortBy="#{palavra.key}">
-                                <h:outputText value="#{palavra.key}"/>
+                            <p:column headerText="Palavra" sortBy="#{palavra.texto}">
+                                <h:outputText value="#{palavra.texto}"/>
                             </p:column>
                             
-                            <p:column headerText="Ocorrências" sortBy="#{palavra.value}">
-                                <h:outputText value="#{palavra.value}"/>
+                            <p:column headerText="Ocorrências" sortBy="#{palavra.ocorrencias}">
+                                <h:outputText value="#{palavra.ocorrencias}"/>
                             </p:column>
                             
                             <p:column headerText="Gráfico">
-                                <p:progressBar value="#{(palavra.value / analisadorFraseBean.totalPalavrasDistintas) * 100}"
+                                <p:progressBar value="#{(palavra.ocorrencias / analisadorFraseBean.totalPalavrasDistintas) * 100}"
                                              labelTemplate="{value}%"
                                              displayOnly="true"/>
                             </p:column>
