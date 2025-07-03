@@ -1,0 +1,56 @@
+.centered {
+    margin: 0 auto;
+    max-width: 800px;
+    padding: 20px;
+}
+
+.card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+body {
+    background-color: #f5f5f5;
+}
+
+.title {
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.result-card {
+    margin-top: 20px;
+}
+
+.word-count {
+    font-size: 24px;
+    color: var(--primary-color);
+    text-align: center;
+    margin: 20px 0;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mt-3 {
+    margin-top: 1rem;
+}
+
+.w-100 {
+    width: 100%;
+}
+
+/* PrimeFaces customizations */
+.ui-datatable .ui-datatable-header {
+    background: var(--primary-color);
+    color: var(--primary-color-text);
+}
+
+.ui-progressbar {
+    height: 20px;
+} 

@@ -27,9 +27,9 @@
         <param-value>Development</param-value>
     </context-param>
 
-    <!-- Theme Configuration -->
+    <!-- Enable Font Awesome -->
     <context-param>
-        <param-name>primefaces.THEME</param-name>
-        <param-value>nova-light</param-value>
+        <param-name>primefaces.FONT_AWESOME</param-name>
+        <param-value>true</param-value>
     </context-param>
 </web-app> 

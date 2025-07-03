@@ -31,13 +31,31 @@ RUN $JBOSS_HOME/bin/add-user.sh admin admin123 --silent
 RUN sed -i 's/<inet-address value="${jboss.bind.address:127.0.0.1}"/<inet-address value="${jboss.bind.address:0.0.0.0}"/g' $JBOSS_HOME/standalone/configuration/standalone.xml && \
     sed -i 's/<inet-address value="${jboss.bind.address.management:127.0.0.1}"/<inet-address value="${jboss.bind.address.management:0.0.0.0}"/g' $JBOSS_HOME/standalone/configuration/standalone.xml
 
+# Create PostgreSQL module
+USER root
+RUN mkdir -p $JBOSS_HOME/modules/system/layers/base/org/postgresql/main/
+COPY postgresql-42.2.5.jar $JBOSS_HOME/modules/system/layers/base/org/postgresql/main/
+RUN echo '<?xml version="1.0" encoding="UTF-8"?>\n\
+<module xmlns="urn:jboss:module:1.1" name="org.postgresql">\n\
+    <resources>\n\
+        <resource-root path="postgresql-42.2.5.jar"/>\n\
+    </resources>\n\
+    <dependencies>\n\
+        <module name="javax.api"/>\n\
+        <module name="javax.transaction.api"/>\n\
+    </dependencies>\n\
+</module>' > $JBOSS_HOME/modules/system/layers/base/org/postgresql/main/module.xml
+
+# Add PostgreSQL driver configuration to standalone.xml
+RUN sed -i '/<drivers>/ a\
+                    <driver name="postgresql" module="org.postgresql">\n\
+                        <xa-datasource-class>org.postgresql.xa.PGXADataSource</xa-datasource-class>\n\
+                    </driver>' $JBOSS_HOME/standalone/configuration/standalone.xml
+
 # Create deployments directory with correct permissions
 RUN mkdir -p $JBOSS_HOME/standalone/deployments && \
     chown -R jboss:jboss $JBOSS_HOME/standalone/deployments && \
     chmod -R 755 $JBOSS_HOME/standalone/deployments
-
-# Copy PostgreSQL driver
-COPY --chown=jboss:jboss postgresql-42.2.5.jar $JBOSS_HOME/standalone/deployments/
 
 # Copy datasource configuration
 COPY --chown=jboss:jboss src/main/resources/META-INF/prover-ds.xml $JBOSS_HOME/standalone/deployments/
@@ -47,6 +65,9 @@ COPY --chown=jboss:jboss target/prover-jsf.war $JBOSS_HOME/standalone/deployment
 
 # Set environment variables
 ENV JAVA_OPTS="-Djava.net.preferIPv4Stack=true -Djboss.bind.address=0.0.0.0 -Djboss.bind.address.management=0.0.0.0 -Djava.security.egd=file:/dev/./urandom"
+
+# Switch back to jboss user
+USER jboss
 
 # Expose ports
 EXPOSE 8080 9990
