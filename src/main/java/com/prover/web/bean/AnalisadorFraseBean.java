@@ -3,6 +3,8 @@ package com.prover.web.bean;
 import com.prover.model.FraseAnalisada;
 import com.prover.model.Palavra;
 import com.prover.service.AnalisadorService;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -34,6 +36,8 @@ public class AnalisadorFraseBean implements Serializable {
             processando = true;
             
             if (frase == null || frase.trim().isEmpty()) {
+                addMessage(FacesMessage.SEVERITY_WARN, 
+                    "Atenção", "Por favor, digite uma frase para análise.");
                 limparResultados();
                 return;
             }
@@ -53,16 +57,33 @@ public class AnalisadorFraseBean implements Serializable {
                 
                 // Atualiza o histórico
                 carregarHistorico();
+                
+                // Mensagem de sucesso
+                addMessage(FacesMessage.SEVERITY_INFO, 
+                    "Sucesso", "Frase analisada com sucesso!");
             } else {
+                addMessage(FacesMessage.SEVERITY_ERROR, 
+                    "Erro", "Não foi possível analisar a frase. Tente novamente.");
                 limparResultados();
             }
+        } catch (Exception e) {
+            addMessage(FacesMessage.SEVERITY_ERROR, 
+                "Erro", "Ocorreu um erro durante a análise. Tente novamente.");
+            limparResultados();
         } finally {
             processando = false;
         }
     }
     
     public void carregarHistorico() {
-        historico = analisadorService.buscarHistorico();
+        try {
+            historico = analisadorService.buscarHistorico();
+            addMessage(FacesMessage.SEVERITY_INFO, 
+                "Sucesso", "Histórico atualizado com sucesso!");
+        } catch (Exception e) {
+            addMessage(FacesMessage.SEVERITY_ERROR, 
+                "Erro", "Erro ao carregar o histórico. Tente novamente.");
+        }
     }
     
     public void removerAnalise(Long id) {
@@ -140,5 +161,16 @@ public class AnalisadorFraseBean implements Serializable {
     
     public void setAnaliseParaRemover(Long analiseParaRemover) {
         this.analiseParaRemover = analiseParaRemover;
+    }
+    
+    /**
+     * Método helper para adicionar mensagens ao FacesContext
+     * Verifica se o FacesContext está disponível antes de usar
+     */
+    private void addMessage(FacesMessage.Severity severity, String summary, String detail) {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext != null) {
+            facesContext.addMessage(null, new FacesMessage(severity, summary, detail));
+        }
     }
 } 

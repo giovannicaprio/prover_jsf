@@ -2,7 +2,7 @@
 
 Aplicação Java Web para análise de frases, desenvolvida como parte do teste técnico da Prover.
 
-## Novas Funcionalidades 
+## Novas Funcionalidades git
 
 ### Histórico de Frases Analisadas ✅
 - Todas as frases analisadas agora são **armazenadas no banco de dados** (PostgreSQL) via JPA/Hibernate
@@ -19,6 +19,23 @@ Aplicação Java Web para análise de frases, desenvolvida como parte do teste t
   - **Coluna de ações removida**: não é mais possível remover ou detalhar análises diretamente pela interface
 - Conversor customizado para exibição de datas no formato brasileiro (`dd/MM/yyyy HH:mm:ss`)
 - Integração completa com JPA, CDI e PrimeFaces
+
+### Sistema de Mensagens e Feedback Visual ✅
+- **Mensagens de erro amigáveis**:
+  - Aviso quando frase está vazia: "Por favor, digite uma frase para análise."
+  - Erro quando não é possível analisar: "Não foi possível analisar a frase. Tente novamente."
+  - Erro genérico: "Ocorreu um erro durante a análise. Tente novamente."
+- **Mensagens de sucesso**:
+  - Confirmação de análise bem-sucedida: "Frase analisada com sucesso!"
+  - Confirmação de atualização do histórico: "Histórico atualizado com sucesso!"
+- **Componente p:messages**:
+  - Exibição de mensagens em ambas as páginas (index.xhtml e historico.xhtml)
+  - Mensagens fecháveis e com atualização automática
+  - Integração com AJAX para atualização dinâmica
+- **Tratamento robusto de erros**:
+  - Try/catch com mensagens específicas
+  - Verificação de FacesContext para compatibilidade com testes
+  - Método helper `addMessage()` para centralizar criação de mensagens
 
 ### Exemplo de uso do histórico
 
@@ -64,6 +81,10 @@ Aplicação Java Web para análise de frases, desenvolvida como parte do teste t
   ```
 - Atualização dinâmica da interface via AJAX
 - **Histórico exibido em dataTable com paginação**
+- **Sistema de mensagens integrado**:
+  - Componentes `<p:messages>` em ambas as páginas
+  - Atualização via AJAX: `update="@form messages"` ou `update="historicoForm:messages"`
+  - Mensagens de erro, sucesso e aviso em tempo real
 
 ### 4. Requisitos Técnicos ✅
 - **Java 8**

@@ -12,6 +12,9 @@
         <div class="centered">
             <h1 class="title">Histórico de Análises</h1>
             <h:form id="historicoForm">
+                <p:messages id="messages" showDetail="true" showSummary="false" 
+                           closable="true" autoUpdate="true" />
+                
                 <div class="stats-card mb-3">
                     <p:panel>
                         <f:facet name="header">
@@ -44,7 +47,7 @@
                             <p:commandButton value="Atualizar" 
                                            icon="pi pi-refresh"
                                            action="#{analisadorFraseBean.carregarHistorico}"
-                                           update="historicoForm"
+                                           update="historicoForm:messages historicoForm"
                                            styleClass="ui-button-secondary"/>
                         </div>
                     </f:facet>

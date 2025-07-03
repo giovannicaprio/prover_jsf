@@ -23,10 +23,12 @@
                 </div>
                 <nav class="navbar-menu">
                     <ui:insert name="navigation">
-                        <p:menubar styleClass="custom-menubar">
-                            <p:menuitem value="Home" icon="fas fa-home" url="index.xhtml" />
-                            <p:menuitem value="Histórico" icon="fas fa-history" url="historico.xhtml" />
-                        </p:menubar>
+                        <h:form>
+                            <p:menubar styleClass="custom-menubar">
+                                <p:menuitem value="Home" icon="fas fa-home" url="index.xhtml" />
+                                <p:menuitem value="Histórico" icon="fas fa-history" url="historico.xhtml" />
+                            </p:menubar>
+                        </h:form>
                     </ui:insert>
                 </nav>
             </div>

@@ -12,13 +12,18 @@
         <div class="centered">
             <div class="header-actions mb-3">
                 <h1 class="title">Analisador de Frases</h1>
-                <p:commandButton value="Ver Histórico" 
-                               icon="pi pi-history"
-                               action="historico?faces-redirect=true"
-                               styleClass="ui-button-secondary"/>
+                <h:form>
+                    <p:commandButton value="Ver Histórico" 
+                                   icon="pi pi-history"
+                                   action="historico?faces-redirect=true"
+                                   styleClass="ui-button-secondary"/>
+                </h:form>
             </div>
             
             <h:form>
+                <p:messages id="messages" showDetail="true" showSummary="false" 
+                           closable="true" autoUpdate="true" />
+                
                 <div class="card">
                     <p:panel>
                         <f:facet name="header">
@@ -42,7 +47,7 @@
                                 <p:commandButton value="Analisar Frase"
                                                icon="pi pi-search"
                                                action="#{analisadorFraseBean.analisarFrase}"
-                                               update="@form"
+                                               update="@form messages"
                                                styleClass="ui-button-primary"
                                                onclick="PF('statusDialog').show()"
                                                oncomplete="PF('statusDialog').hide()"
