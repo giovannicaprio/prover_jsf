@@ -2,6 +2,49 @@
 
 Aplicação Java Web para análise de frases, desenvolvida como parte do teste técnico da Prover.
 
+## Novas Funcionalidades git
+
+### Histórico de Frases Analisadas ✅
+- Todas as frases analisadas agora são **armazenadas no banco de dados** (PostgreSQL) via JPA/Hibernate
+- Cada análise salva:
+  - Frase original enviada
+  - Total de palavras distintas
+  - Total de palavras
+  - Data e hora da análise (usando `LocalDateTime`)
+  - Ocorrências de cada palavra (persistidas em tabela relacionada)
+- **Página de histórico** (`historico.xhtml`):
+  - Lista todas as análises já realizadas, ordenadas da mais recente para a mais antiga
+  - Exibe: data/hora, frase original, total de palavras distintas e total de palavras
+  - Possui paginação e botão para atualizar a lista
+  - **Coluna de ações removida**: não é mais possível remover ou detalhar análises diretamente pela interface
+- Conversor customizado para exibição de datas no formato brasileiro (`dd/MM/yyyy HH:mm:ss`)
+- Integração completa com JPA, CDI e PrimeFaces
+
+### Sistema de Mensagens e Feedback Visual ✅
+- **Mensagens de erro amigáveis**:
+  - Aviso quando frase está vazia: "Por favor, digite uma frase para análise."
+  - Erro quando não é possível analisar: "Não foi possível analisar a frase. Tente novamente."
+  - Erro genérico: "Ocorreu um erro durante a análise. Tente novamente."
+- **Mensagens de sucesso**:
+  - Confirmação de análise bem-sucedida: "Frase analisada com sucesso!"
+  - Confirmação de atualização do histórico: "Histórico atualizado com sucesso!"
+- **Componente p:messages**:
+  - Exibição de mensagens em ambas as páginas (index.xhtml e historico.xhtml)
+  - Mensagens fecháveis e com atualização automática
+  - Integração com AJAX para atualização dinâmica
+- **Tratamento robusto de erros**:
+  - Try/catch com mensagens específicas
+  - Verificação de FacesContext para compatibilidade com testes
+  - Método helper `addMessage()` para centralizar criação de mensagens
+
+### Exemplo de uso do histórico
+
+1. Analise uma frase normalmente na tela principal
+2. Acesse o menu "Histórico" para visualizar todas as análises já realizadas
+3. Veja a data/hora, frase original e estatísticas de cada análise
+
+---
+
 ## Validações Técnicas Realizadas
 
 ### 1. Fluxo da Aplicação ✅
@@ -11,8 +54,10 @@ Aplicação Java Web para análise de frases, desenvolvida como parte do teste t
 - Análise realizada no backend:
   - Cálculo de palavras distintas
   - Contagem de ocorrências por palavra
+- **Persistência da análise no banco de dados**
 - Retorno do resultado para interface
 - Exibição do resultado formatado
+- **Histórico de análises disponível para consulta**
 
 ### 2. Backend ✅
 - Processamento sincronizado (uma requisição por vez)
@@ -22,6 +67,10 @@ Aplicação Java Web para análise de frases, desenvolvida como parte do teste t
   - Normalização do texto (remoção de pontuação, conversão para minúsculas)
   - Contagem de palavras distintas
   - Cálculo de ocorrências
+- **Persistência JPA/Hibernate**:
+  - Entidades `FraseAnalisada` e `PalavraAnalisada`
+  - DAO para operações de banco
+  - Datas salvas com precisão de segundos
 
 ### 3. Comunicação Frontend-Backend ✅
 - Binding de componentes via Expression Language (EL)
@@ -31,6 +80,11 @@ Aplicação Java Web para análise de frases, desenvolvida como parte do teste t
   <p:commandButton action="#{analisadorFraseBean.analisarFrase}" />
   ```
 - Atualização dinâmica da interface via AJAX
+- **Histórico exibido em dataTable com paginação**
+- **Sistema de mensagens integrado**:
+  - Componentes `<p:messages>` em ambas as páginas
+  - Atualização via AJAX: `update="@form messages"` ou `update="historicoForm:messages"`
+  - Mensagens de erro, sucesso e aviso em tempo real
 
 ### 4. Requisitos Técnicos ✅
 - **Java 8**
@@ -48,6 +102,9 @@ Aplicação Java Web para análise de frases, desenvolvida como parte do teste t
     - p:dataTable
     - p:progressBar
     - p:dialog (loading)
+- **JPA/Hibernate**
+  - Persistência de entidades
+  - Datas e relacionamentos mapeados
 
 ### 5. Compatibilidade com Servidores ✅
 - **WildFly 10.0.0.Final**
@@ -75,41 +132,100 @@ Aplicação Java Web para análise de frases, desenvolvida como parte do teste t
 - JSF 2.2.14
 - PrimeFaces 6.1
 - CDI 1.2
+- JPA/Hibernate
 - Maven
 - WildFly 10.0.0.Final
+- PostgreSQL
 - Git
 
 ## Executando o Projeto
 
 ### Pré-requisitos
-- Docker
-- Docker Compose
-- Maven 3.x (para build local)
-- Java 8 JDK
+
+#### **Obrigatórios:**
+- **Docker Desktop** (versão 20.10+)
+- **Docker Compose** (versão 1.29+)
+- **Git** (para clonar o repositório)
+
+#### **Opcionais (para desenvolvimento local):**
+- **Java 8 JDK** (para build local)
+- **Maven 3.6+** (para build local)
 
 ### Passos para Execução
 
-1. Clone o repositório:
+#### **Método 1: Execução Automática (Recomendado)**
+
+1. **Clone o repositório:**
 ```bash
 git clone https://github.com/giovannicaprio/prover_jsf.git
 cd prover_jsf
 ```
 
-2. Build do projeto:
+2. **Execute o script de instalação:**
+```bash
+chmod +x run.sh
+./run.sh
+```
+
+#### **Método 2: Execução Manual**
+
+1. **Clone o repositório:**
+```bash
+git clone https://github.com/giovannicaprio/prover_jsf.git
+cd prover_jsf
+```
+
+2. **Build do projeto (se tiver Java/Maven local):**
 ```bash
 mvn clean package
 ```
 
-3. Iniciar containers:
+3. **Iniciar containers:**
 ```bash
 docker-compose up --build
 ```
 
-A aplicação estará disponível em:
-- Aplicação: http://localhost:8080/prover-jsf
-- Console Admin: http://localhost:9990
-  - Usuário: admin
-  - Senha: admin123
+### **Acesso à Aplicação**
+
+Após a inicialização (aguarde ~15 segundos):
+- **Aplicação:** http://localhost:8080/prover-jsf
+- **Console Admin:** http://localhost:9990
+  - **Usuário:** admin
+  - **Senha:** admin123
+
+### **Troubleshooting**
+
+#### **Problemas Comuns:**
+
+1. **Porta 8080 ou 9990 já em uso:**
+```bash
+# Verificar processos usando as portas
+lsof -i :8080
+lsof -i :9990
+
+# Parar containers existentes
+docker-compose down
+```
+
+2. **Erro de permissão no script:**
+```bash
+chmod +x run.sh
+```
+
+3. **Docker não está rodando:**
+```bash
+# Iniciar Docker Desktop
+# Verificar se está funcionando
+docker --version
+docker-compose --version
+```
+
+4. **Limpar tudo e recomeçar:**
+```bash
+docker-compose down --volumes --remove-orphans
+docker system prune -f
+./run.sh
+```
 
 ## Estrutura do Projeto
 
@@ -122,6 +238,8 @@ src/
 │   │           ├── bean/
 │   │           ├── model/
 │   │           ├── service/
+│   │           ├── dao/           # Novidade: DAO para persistência
+│   │           ├── converter/     # Novidade: Conversor para datas
 │   │           └── web/
 │   ├── resources/
 │   │   └── META-INF/
@@ -129,6 +247,7 @@ src/
 │       ├── resources/
 │       │   ├── css/
 │       │   └── images/
+│       ├── historico.xhtml        # Novidade: página de histórico
 │       └── WEB-INF/
 └── test/
     └── java/
@@ -140,13 +259,20 @@ src/
    - Processamento de frases
    - Contagem de palavras distintas
    - Cálculo de ocorrências
+   - **Persistência da análise no banco**
 
-2. **Interface Responsiva**
+2. **Histórico de Análises**
+   - Exibição de todas as análises já realizadas
+   - Ordenação por data/hora (mais recente primeiro)
+   - Exibição de estatísticas de cada análise
+   - **Sem coluna de ações**: histórico é apenas para consulta
+
+3. **Interface Responsiva**
    - Design moderno
    - Feedback visual durante processamento
    - Exibição clara dos resultados
 
-3. **Validações**
+4. **Validações**
    - Entrada de texto
    - Processamento sincronizado
    - Feedback de erros
@@ -175,36 +301,14 @@ Os testes estão organizados em três camadas principais, seguindo a arquitetura
 
 #### 1. Testes de Modelo (Model)
 - `PalavraTest`: Testa a entidade de domínio
-  - Validação de construtores (padrão e parametrizado)
-  - Verificação de getters e setters
-  - Validação de equals e hashCode
-  - Verificação do método toString
-  - Testes de consistência de estado
+- `FraseAnalisadaTest`: Testa a entidade de histórico
+- `PalavraAnalisadaTest`: Testa a entidade de palavras persistidas
 
 #### 2. Testes de Serviço (Service)
 - `AnalisadorServiceTest`: Testa a lógica de negócio
-  - Cenários de entrada:
-    - Texto vazio e nulo
-    - Texto simples
-    - Texto com pontuação
-    - Texto com acentuação
-    - Texto com múltiplas linhas
-    - Texto com espaços extras
-  - Casos especiais:
-    - Caracteres especiais (@, #, -, .)
-    - Maiúsculas e minúsculas
-    - Palavras repetidas
-  - Validação de ordenação dos resultados
-  - Verificação de contagem de palavras distintas
 
 #### 3. Testes de Controller (Bean)
-- `AnalisadorFraseBeanTest`: Testa o controlador JSF
-  - Integração com o serviço (usando Mockito)
-  - Validação de entrada de dados
-  - Processamento de formulário
-  - Limpeza de campos
-  - Manipulação de estado do bean
-  - Verificação de escopo e ciclo de vida
+- `AnalisadorFraseBeanTest`: Testa o bean principal e integração com histórico
 
 ### Cobertura de Testes
 

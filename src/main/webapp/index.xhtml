@@ -10,9 +10,20 @@
 
     <ui:define name="content">
         <div class="centered">
-            <h1 class="title">Analisador de Frases</h1>
+            <div class="header-actions mb-3">
+                <h1 class="title">Analisador de Frases</h1>
+                <h:form>
+                    <p:commandButton value="Ver Histórico" 
+                                   icon="pi pi-history"
+                                   action="historico?faces-redirect=true"
+                                   styleClass="ui-button-secondary"/>
+                </h:form>
+            </div>
             
             <h:form>
+                <p:messages id="messages" showDetail="true" showSummary="false" 
+                           closable="true" autoUpdate="true" />
+                
                 <div class="card">
                     <p:panel>
                         <f:facet name="header">
@@ -36,7 +47,7 @@
                                 <p:commandButton value="Analisar Frase"
                                                icon="pi pi-search"
                                                action="#{analisadorFraseBean.analisarFrase}"
-                                               update="@form"
+                                               update="@form messages"
                                                styleClass="ui-button-primary"
                                                onclick="PF('statusDialog').show()"
                                                oncomplete="PF('statusDialog').hide()"
@@ -73,8 +84,8 @@
                                 <h:outputText value="#{palavra.ocorrencias}"/>
                             </p:column>
                             
-                            <p:column headerText="Gráfico">
-                                <p:progressBar value="#{(palavra.ocorrencias / analisadorFraseBean.totalPalavrasDistintas) * 100}"
+                            <p:column headerText="% de ocorrências">
+                                <p:progressBar value="#{(palavra.ocorrencias / analisadorFraseBean.totalPalavras) * 100}"
                                              labelTemplate="{value}%"
                                              displayOnly="true"/>
                             </p:column>

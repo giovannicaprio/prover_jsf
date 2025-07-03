@@ -1,8 +1,9 @@
-package com.prover.bean;
+package com.prover.web.bean;
 
+import com.prover.model.FraseAnalisada;
 import com.prover.model.Palavra;
+import com.prover.model.PalavraAnalisada;
 import com.prover.service.AnalisadorService;
-import com.prover.web.bean.AnalisadorFraseBean;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -39,11 +40,15 @@ public class AnalisadorFraseBeanTest {
     public void testAnalisarFraseComTextoValido() {
         // Arrange
         String frase = "teste teste exemplo";
-        List<Palavra> palavrasEsperadas = Arrays.asList(
-            new Palavra("teste", 2),
-            new Palavra("exemplo", 1)
+        FraseAnalisada fraseAnalisada = new FraseAnalisada(frase, 2, 3);
+        List<PalavraAnalisada> palavrasAnalisadas = Arrays.asList(
+            new PalavraAnalisada("teste", 2, fraseAnalisada),
+            new PalavraAnalisada("exemplo", 1, fraseAnalisada)
         );
-        when(analisadorService.analisarTexto(frase)).thenReturn(palavrasEsperadas);
+        fraseAnalisada.setPalavrasAnalisadas(palavrasAnalisadas);
+        
+        when(analisadorService.analisarESalvarFrase(frase)).thenReturn(fraseAnalisada);
+        when(analisadorService.buscarHistorico()).thenReturn(Arrays.asList(fraseAnalisada));
 
         bean.setFrase(frase);
 
@@ -51,9 +56,15 @@ public class AnalisadorFraseBeanTest {
         bean.analisarFrase();
 
         // Assert
-        assertEquals(palavrasEsperadas, bean.getPalavras());
+        assertEquals(2, bean.getPalavras().size());
+        assertEquals("teste", bean.getPalavras().get(0).getTexto());
+        assertEquals(2, bean.getPalavras().get(0).getOcorrencias());
+        assertEquals("exemplo", bean.getPalavras().get(1).getTexto());
+        assertEquals(1, bean.getPalavras().get(1).getOcorrencias());
         assertEquals(2, bean.getTotalPalavrasDistintas());
-        verify(analisadorService).analisarTexto(frase);
+        assertEquals(3, bean.getTotalPalavras());
+        verify(analisadorService).analisarESalvarFrase(frase);
+        verify(analisadorService).buscarHistorico();
         assertTrue(bean.isResultadoVisivel());
         assertFalse(bean.isProcessando());
     }
@@ -69,6 +80,7 @@ public class AnalisadorFraseBeanTest {
         // Assert
         assertTrue(bean.getPalavras().isEmpty());
         assertEquals(0, bean.getTotalPalavrasDistintas());
+        assertEquals(0, bean.getTotalPalavras());
         assertFalse(bean.isResultadoVisivel());
         assertFalse(bean.isProcessando());
     }
@@ -84,6 +96,7 @@ public class AnalisadorFraseBeanTest {
         // Assert
         assertTrue(bean.getPalavras().isEmpty());
         assertEquals(0, bean.getTotalPalavrasDistintas());
+        assertEquals(0, bean.getTotalPalavras());
         assertFalse(bean.isResultadoVisivel());
         assertFalse(bean.isProcessando());
     }
@@ -100,6 +113,7 @@ public class AnalisadorFraseBeanTest {
         assertEquals(frase, bean.getFrase());
         assertTrue(bean.getPalavras().isEmpty()); // Inicialmente vazio
         assertEquals(0, bean.getTotalPalavrasDistintas()); // Inicialmente zero
+        assertEquals(0, bean.getTotalPalavras()); // Inicialmente zero
         assertFalse(bean.isResultadoVisivel()); // Inicialmente falso
         assertFalse(bean.isProcessando()); // Inicialmente falso
     }
@@ -107,13 +121,18 @@ public class AnalisadorFraseBeanTest {
     @Test
     public void testGetOcorrenciasOrdenadas() {
         // Arrange
-        List<Palavra> palavras = Arrays.asList(
-            new Palavra("menos", 1),
-            new Palavra("mais", 3),
-            new Palavra("medio", 2)
+        String frase = "teste";
+        FraseAnalisada fraseAnalisada = new FraseAnalisada(frase, 3, 6);
+        List<PalavraAnalisada> palavrasAnalisadas = Arrays.asList(
+            new PalavraAnalisada("mais", 3, fraseAnalisada),
+            new PalavraAnalisada("medio", 2, fraseAnalisada),
+            new PalavraAnalisada("menos", 1, fraseAnalisada)
         );
-        when(analisadorService.analisarTexto(anyString())).thenReturn(palavras);
-        bean.setFrase("teste");
+        fraseAnalisada.setPalavrasAnalisadas(palavrasAnalisadas);
+        
+        when(analisadorService.analisarESalvarFrase(frase)).thenReturn(fraseAnalisada);
+        when(analisadorService.buscarHistorico()).thenReturn(Arrays.asList(fraseAnalisada));
+        bean.setFrase(frase);
         
         // Act
         bean.analisarFrase();
@@ -127,5 +146,6 @@ public class AnalisadorFraseBeanTest {
         assertEquals(2, ordenadas.get(1).getOcorrencias());
         assertEquals("menos", ordenadas.get(2).getTexto());
         assertEquals(1, ordenadas.get(2).getOcorrencias());
+        assertEquals(6, bean.getTotalPalavras()); // 3 + 2 + 1 = 6 palavras totais
     }
 } 

@@ -1,12 +1,20 @@
 package com.prover.service;
 
+import com.prover.dao.FraseAnalisadaDAO;
+import com.prover.model.FraseAnalisada;
 import com.prover.model.Palavra;
+import com.prover.model.PalavraAnalisada;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class AnalisadorService {
+    
+    @Inject
+    private FraseAnalisadaDAO fraseAnalisadaDAO;
     
     public synchronized List<Palavra> analisarTexto(String texto) {
         if (texto == null || texto.trim().isEmpty()) {
@@ -30,6 +38,53 @@ public class AnalisadorService {
                 .sorted(Comparator.<Palavra>comparingInt(Palavra::getOcorrencias).reversed()
                         .thenComparing(Palavra::getTexto))
                 .collect(Collectors.toList());
+    }
+    
+    @Transactional
+    public FraseAnalisada analisarESalvarFrase(String texto) {
+        if (texto == null || texto.trim().isEmpty()) {
+            return null;
+        }
+        
+        // Analisa o texto
+        List<Palavra> palavras = analisarTexto(texto);
+        int totalPalavrasDistintas = palavras.size();
+        int totalPalavras = palavras.stream().mapToInt(Palavra::getOcorrencias).sum();
+        
+        // Cria a entidade FraseAnalisada
+        FraseAnalisada fraseAnalisada = new FraseAnalisada(texto, totalPalavrasDistintas, totalPalavras);
+        
+        // Converte as palavras para PalavraAnalisada e associa à frase
+        List<PalavraAnalisada> palavrasAnalisadas = palavras.stream()
+                .map(palavra -> new PalavraAnalisada(palavra.getTexto(), palavra.getOcorrencias(), fraseAnalisada))
+                .collect(Collectors.toList());
+        
+        fraseAnalisada.setPalavrasAnalisadas(palavrasAnalisadas);
+        
+        // Salva no banco de dados
+        fraseAnalisadaDAO.salvar(fraseAnalisada);
+        
+        return fraseAnalisada;
+    }
+    
+    public List<FraseAnalisada> buscarHistorico() {
+        return fraseAnalisadaDAO.buscarTodasOrdenadasPorData();
+    }
+    
+    public List<FraseAnalisada> buscarUltimasAnalises(int quantidade) {
+        return fraseAnalisadaDAO.buscarUltimas(quantidade);
+    }
+    
+    public FraseAnalisada buscarAnalisePorId(Long id) {
+        return fraseAnalisadaDAO.buscarPorId(id);
+    }
+    
+    public void removerAnalise(Long id) {
+        fraseAnalisadaDAO.removerPorId(id);
+    }
+    
+    public long contarTotalAnalises() {
+        return fraseAnalisadaDAO.contarTotal();
     }
     
     private String[] normalizarTexto(String texto) {

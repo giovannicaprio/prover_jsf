@@ -1,3 +1,14 @@
+# Build stage
+FROM maven:3.8-openjdk-8 AS builder
+
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+
+# Build the application
+RUN mvn clean package -DskipTests
+
+# Runtime stage
 FROM arm64v8/openjdk:8-jdk-slim
 
 # Install WildFly
@@ -60,8 +71,8 @@ RUN mkdir -p $JBOSS_HOME/standalone/deployments && \
 # Copy datasource configuration
 COPY --chown=jboss:jboss src/main/resources/META-INF/prover-ds.xml $JBOSS_HOME/standalone/deployments/
 
-# Copy WAR file
-COPY --chown=jboss:jboss target/prover-jsf.war $JBOSS_HOME/standalone/deployments/
+# Copy WAR file from builder stage
+COPY --from=builder --chown=jboss:jboss /app/target/prover-jsf.war $JBOSS_HOME/standalone/deployments/
 
 # Set environment variables
 ENV JAVA_OPTS="-Djava.net.preferIPv4Stack=true -Djboss.bind.address=0.0.0.0 -Djboss.bind.address.management=0.0.0.0 -Djava.security.egd=file:/dev/./urandom"
