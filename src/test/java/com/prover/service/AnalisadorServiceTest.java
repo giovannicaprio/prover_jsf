@@ -67,4 +67,47 @@ public class AnalisadorServiceTest {
         int total = analisadorService.contarPalavrasDistintas(palavras);
         assertEquals(2, total);
     }
+
+    @Test
+    public void testAnalisarTextoComMultiplasLinhas() {
+        String texto = "primeira linha\nsegunda linha\nprimeira linha";
+        List<Palavra> resultado = analisadorService.analisarTexto(texto);
+        assertEquals(3, resultado.size());
+        
+        assertTrue(resultado.stream().anyMatch(p -> p.getTexto().equals("primeira") && p.getOcorrencias() == 2));
+        assertTrue(resultado.stream().anyMatch(p -> p.getTexto().equals("linha") && p.getOcorrencias() == 3));
+        assertTrue(resultado.stream().anyMatch(p -> p.getTexto().equals("segunda") && p.getOcorrencias() == 1));
+    }
+
+    @Test
+    public void testAnalisarTextoComEspacosExtras() {
+        String texto = "  palavra   palavra     outra  ";
+        List<Palavra> resultado = analisadorService.analisarTexto(texto);
+        assertEquals(2, resultado.size());
+        
+        assertTrue(resultado.stream().anyMatch(p -> p.getTexto().equals("palavra") && p.getOcorrencias() == 2));
+        assertTrue(resultado.stream().anyMatch(p -> p.getTexto().equals("outra") && p.getOcorrencias() == 1));
+    }
+
+    @Test
+    public void testAnalisarTextoComCaracteresEspeciais() {
+        String texto = "palavra-chave @email.com #hashtag";
+        List<Palavra> resultado = analisadorService.analisarTexto(texto);
+        assertEquals(3, resultado.size());
+        
+        assertTrue(resultado.stream().anyMatch(p -> p.getTexto().equals("palavra-chave")));
+        assertTrue(resultado.stream().anyMatch(p -> p.getTexto().equals("email.com")));
+        assertTrue(resultado.stream().anyMatch(p -> p.getTexto().equals("hashtag")));
+    }
+
+    @Test
+    public void testAnalisarTextoComMaiusculasEMinusculas() {
+        String texto = "Palavra PALAVRA palavra";
+        List<Palavra> resultado = analisadorService.analisarTexto(texto);
+        assertEquals(1, resultado.size());
+        
+        Palavra palavra = resultado.get(0);
+        assertEquals("palavra", palavra.getTexto());
+        assertEquals(3, palavra.getOcorrencias());
+    }
 } 

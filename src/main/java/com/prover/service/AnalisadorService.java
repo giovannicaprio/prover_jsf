@@ -33,9 +33,29 @@ public class AnalisadorService {
     }
     
     private String[] normalizarTexto(String texto) {
-        return texto.toLowerCase()
-                .replaceAll("[^a-záàâãéèêíïóôõöúçñ\\s]", "")
-                .split("\\s+");
+        // Primeiro converte para minúsculas
+        texto = texto.toLowerCase();
+        
+        // Divide em palavras mantendo caracteres especiais
+        String[] palavras = texto.split("\\s+");
+        
+        // Remove pontuação exceto caracteres especiais permitidos
+        for (int i = 0; i < palavras.length; i++) {
+            // Remove @ do início da palavra
+            if (palavras[i].startsWith("@")) {
+                palavras[i] = palavras[i].substring(1);
+            }
+            
+            // Remove # do início da palavra
+            if (palavras[i].startsWith("#")) {
+                palavras[i] = palavras[i].substring(1);
+            }
+            
+            // Mantém hífen e ponto, remove outras pontuações
+            palavras[i] = palavras[i].replaceAll("[^a-záéíóúâêîôûãõàèìòùäëïöüç\\-\\.]", "");
+        }
+        
+        return palavras;
     }
     
     public int contarPalavrasDistintas(List<Palavra> palavras) {

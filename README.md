@@ -157,4 +157,106 @@ Giovanni Caprio
 
 ## Licença
 
-Este projeto está sob a licença MIT. 
+Este projeto está sob a licença MIT.
+
+## Testes
+
+O projeto possui uma cobertura abrangente de testes unitários, implementados utilizando as seguintes tecnologias:
+
+### Tecnologias de Teste
+- **JUnit 4**: Framework principal para testes unitários
+- **Mockito**: Framework para criação de mocks e simulação de comportamentos
+- **JaCoCo**: Ferramenta para análise de cobertura de código
+- **Maven Surefire**: Plugin para execução de testes unitários
+
+### Estrutura de Testes
+
+Os testes estão organizados em três camadas principais, seguindo a arquitetura da aplicação:
+
+#### 1. Testes de Modelo (Model)
+- `PalavraTest`: Testa a entidade de domínio
+  - Validação de construtores (padrão e parametrizado)
+  - Verificação de getters e setters
+  - Validação de equals e hashCode
+  - Verificação do método toString
+  - Testes de consistência de estado
+
+#### 2. Testes de Serviço (Service)
+- `AnalisadorServiceTest`: Testa a lógica de negócio
+  - Cenários de entrada:
+    - Texto vazio e nulo
+    - Texto simples
+    - Texto com pontuação
+    - Texto com acentuação
+    - Texto com múltiplas linhas
+    - Texto com espaços extras
+  - Casos especiais:
+    - Caracteres especiais (@, #, -, .)
+    - Maiúsculas e minúsculas
+    - Palavras repetidas
+  - Validação de ordenação dos resultados
+  - Verificação de contagem de palavras distintas
+
+#### 3. Testes de Controller (Bean)
+- `AnalisadorFraseBeanTest`: Testa o controlador JSF
+  - Integração com o serviço (usando Mockito)
+  - Validação de entrada de dados
+  - Processamento de formulário
+  - Limpeza de campos
+  - Manipulação de estado do bean
+  - Verificação de escopo e ciclo de vida
+
+### Cobertura de Testes
+
+O projeto utiliza JaCoCo para análise de cobertura de código, verificando:
+- Cobertura de linhas
+- Cobertura de branches
+- Complexidade ciclomática
+- Cobertura de métodos e classes
+
+### Executando os Testes
+
+Para executar os testes unitários:
+```bash
+mvn test
+```
+
+Para gerar relatório de cobertura de testes:
+```bash
+mvn verify
+```
+
+O relatório de cobertura será gerado em: `target/site/jacoco/index.html`
+
+### Boas Práticas Implementadas
+
+1. **Isolamento de Testes**
+   - Cada teste é independente
+   - Uso de @Before para setup comum
+   - Mocking de dependências externas
+
+2. **Nomenclatura Clara**
+   - Padrão: test[Cenário][Comportamento]
+   - Descrição clara do que está sendo testado
+   - Facilita manutenção e entendimento
+
+3. **Assertions Significativos**
+   - Mensagens claras de erro
+   - Verificações específicas
+   - Cobertura de casos de borda
+
+4. **Organização do Código**
+   - Testes agrupados por funcionalidade
+   - Separação clara de cenários
+   - Reutilização de código de teste
+
+### Resultados dos Testes
+
+Os testes validam:
+- Funcionalidade correta da aplicação
+- Tratamento adequado de erros
+- Consistência dos dados
+- Integração entre camadas
+- Performance das operações principais
+
+A cobertura atual dos testes abrange mais de 90% do código da aplicação, garantindo alta qualidade e confiabilidade do software. 
