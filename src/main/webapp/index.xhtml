@@ -10,7 +10,13 @@
 
     <ui:define name="content">
         <div class="centered">
-            <h1 class="title">Analisador de Frases</h1>
+            <div class="header-actions mb-3">
+                <h1 class="title">Analisador de Frases</h1>
+                <p:commandButton value="Ver Histórico" 
+                               icon="pi pi-history"
+                               action="historico?faces-redirect=true"
+                               styleClass="ui-button-secondary"/>
+            </div>
             
             <h:form>
                 <div class="card">
@@ -73,8 +79,8 @@
                                 <h:outputText value="#{palavra.ocorrencias}"/>
                             </p:column>
                             
-                            <p:column headerText="Gráfico">
-                                <p:progressBar value="#{(palavra.ocorrencias / analisadorFraseBean.totalPalavrasDistintas) * 100}"
+                            <p:column headerText="% de ocorrências">
+                                <p:progressBar value="#{(palavra.ocorrencias / analisadorFraseBean.totalPalavras) * 100}"
                                              labelTemplate="{value}%"
                                              displayOnly="true"/>
                             </p:column>

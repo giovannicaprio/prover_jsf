@@ -1,5 +1,6 @@
 package com.prover.web.bean;
 
+import com.prover.model.FraseAnalisada;
 import com.prover.model.Palavra;
 import com.prover.service.AnalisadorService;
 import javax.faces.view.ViewScoped;
@@ -8,8 +9,6 @@ import javax.inject.Named;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
-import java.util.Comparator;
-import java.util.ArrayList;
 
 @Named
 @ViewScoped
@@ -23,8 +22,12 @@ public class AnalisadorFraseBean implements Serializable {
     private String frase;
     private List<Palavra> palavras;
     private int totalPalavrasDistintas;
+    private int totalPalavras;
     private boolean resultadoVisivel;
     private boolean processando;
+    private List<FraseAnalisada> historico;
+    private FraseAnalisada ultimaAnalise;
+    private Long analiseParaRemover;
     
     public void analisarFrase() {
         try {
@@ -35,20 +38,51 @@ public class AnalisadorFraseBean implements Serializable {
                 return;
             }
             
-            palavras = analisadorService.analisarTexto(frase);
-            totalPalavrasDistintas = palavras.size();
-            resultadoVisivel = true;
+            // Analisa e salva no banco
+            ultimaAnalise = analisadorService.analisarESalvarFrase(frase);
+            
+            if (ultimaAnalise != null) {
+                // Converte para o formato da interface
+                palavras = ultimaAnalise.getPalavrasAnalisadas().stream()
+                        .map(p -> new Palavra(p.getTexto(), p.getOcorrencias()))
+                        .collect(java.util.stream.Collectors.toList());
+                
+                totalPalavrasDistintas = ultimaAnalise.getTotalPalavrasDistintas();
+                totalPalavras = ultimaAnalise.getTotalPalavras();
+                resultadoVisivel = true;
+                
+                // Atualiza o histórico
+                carregarHistorico();
+            } else {
+                limparResultados();
+            }
         } finally {
             processando = false;
         }
     }
     
+    public void carregarHistorico() {
+        historico = analisadorService.buscarHistorico();
+    }
+    
+    public void removerAnalise(Long id) {
+        analisadorService.removerAnalise(id);
+        carregarHistorico();
+    }
+    
     private void limparResultados() {
         palavras = Collections.emptyList();
         totalPalavrasDistintas = 0;
+        totalPalavras = 0;
         resultadoVisivel = false;
+        ultimaAnalise = null;
     }
     
+    public List<Palavra> getOcorrenciasOrdenadas() {
+        return getPalavras(); // O service já retorna ordenado
+    }
+    
+    // Getters e Setters
     public String getFrase() {
         return frase;
     }
@@ -61,18 +95,12 @@ public class AnalisadorFraseBean implements Serializable {
         return palavras != null ? palavras : Collections.emptyList();
     }
     
-    public List<Palavra> getOcorrenciasOrdenadas() {
-        if (palavras == null) {
-            return Collections.emptyList();
-        }
-        
-        List<Palavra> ordenadas = new ArrayList<>(palavras);
-        ordenadas.sort((p1, p2) -> p2.getOcorrencias() - p1.getOcorrencias());
-        return ordenadas;
-    }
-    
     public int getTotalPalavrasDistintas() {
         return totalPalavrasDistintas;
+    }
+    
+    public int getTotalPalavras() {
+        return totalPalavras;
     }
     
     public boolean isResultadoVisivel() {
@@ -81,5 +109,36 @@ public class AnalisadorFraseBean implements Serializable {
     
     public boolean isProcessando() {
         return processando;
+    }
+    
+    public List<FraseAnalisada> getHistorico() {
+        if (historico == null) {
+            carregarHistorico();
+        }
+        return historico;
+    }
+    
+    public void setHistorico(List<FraseAnalisada> historico) {
+        this.historico = historico;
+    }
+    
+    public FraseAnalisada getUltimaAnalise() {
+        return ultimaAnalise;
+    }
+    
+    public void setUltimaAnalise(FraseAnalisada ultimaAnalise) {
+        this.ultimaAnalise = ultimaAnalise;
+    }
+    
+    public long getTotalAnalises() {
+        return analisadorService.contarTotalAnalises();
+    }
+    
+    public Long getAnaliseParaRemover() {
+        return analiseParaRemover;
+    }
+    
+    public void setAnaliseParaRemover(Long analiseParaRemover) {
+        this.analiseParaRemover = analiseParaRemover;
     }
 } 
