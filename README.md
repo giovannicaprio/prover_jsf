@@ -2,24 +2,6 @@
 
 Aplicação Java Web para análise de frases, desenvolvida como parte do teste técnico da Prover.
 
-## Novas Funcionalidades git
-
-### Histórico de Frases Analisadas ✅
-- Todas as frases analisadas agora são **armazenadas no banco de dados** (PostgreSQL) via JPA/Hibernate
-- Cada análise salva:
-  - Frase original enviada
-  - Total de palavras distintas
-  - Total de palavras
-  - Data e hora da análise (usando `LocalDateTime`)
-  - Ocorrências de cada palavra (persistidas em tabela relacionada)
-- **Página de histórico** (`historico.xhtml`):
-  - Lista todas as análises já realizadas, ordenadas da mais recente para a mais antiga
-  - Exibe: data/hora, frase original, total de palavras distintas e total de palavras
-  - Possui paginação e botão para atualizar a lista
-  - **Coluna de ações removida**: não é mais possível remover ou detalhar análises diretamente pela interface
-- Conversor customizado para exibição de datas no formato brasileiro (`dd/MM/yyyy HH:mm:ss`)
-- Integração completa com JPA, CDI e PrimeFaces
-
 ### Sistema de Mensagens e Feedback Visual ✅
 - **Mensagens de erro amigáveis**:
   - Aviso quando frase está vazia: "Por favor, digite uma frase para análise."
@@ -36,6 +18,22 @@ Aplicação Java Web para análise de frases, desenvolvida como parte do teste t
   - Try/catch com mensagens específicas
   - Verificação de FacesContext para compatibilidade com testes
   - Método helper `addMessage()` para centralizar criação de mensagens
+
+### Histórico de Frases Analisadas ✅
+- Todas as frases analisadas são **armazenadas no banco de dados** (PostgreSQL) via JPA/Hibernate
+- Cada análise salva:
+  - Frase original enviada
+  - Total de palavras distintas
+  - Total de palavras
+  - Data e hora da análise (usando `LocalDateTime`)
+  - Ocorrências de cada palavra (persistidas em tabela relacionada)
+- **Página de histórico** (`historico.xhtml`):
+  - Lista todas as análises já realizadas, ordenadas da mais recente para a mais antiga
+  - Exibe: data/hora, frase original, total de palavras distintas e total de palavras
+  - Possui paginação e botão para atualizar a lista
+  - **Coluna de ações removida**: não é mais possível remover ou detalhar análises diretamente pela interface
+- Conversor customizado para exibição de datas no formato brasileiro (`dd/MM/yyyy HH:mm:ss`)
+- Integração completa com JPA, CDI e PrimeFaces
 
 ### Exemplo de uso do histórico
 
